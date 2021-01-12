@@ -54,9 +54,10 @@ line1 = "Geimpfte Dosen (Deutschland): #{data["sum"]} 💉\n"
 line2 = "Fortschritt für Herdenimmunität (70% geimpfte):\n"
 line3 = bar + " (#{progress}%)\n"
 line4 = "Geschätzes Zieldatum: #{target_date.strftime("%d.%m.%Y")} 📅"
+line5 = "#COVID19 #VACCINE"
 
 
-tweet = line1 + line2 + line3 + line4
+tweet = line1 + line2 + line3 + line4 + line5
 
 
 
