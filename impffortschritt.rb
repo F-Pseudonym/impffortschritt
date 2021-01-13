@@ -51,7 +51,7 @@ if olddate >= pubdate
   exit(0)
 end
 
-progress = ((data["sum"]/required_doses.to_f)*100).round(3)
+progress = ((data["sum"]/required_doses.to_f)*100).round(1)
 doses_per_day = (data["sum"] - data["sum_7d"])/7
 remaining_days = (required_doses-data["sum"])/doses_per_day
 target_date = Time.now + remaining_days * 24*60*60
