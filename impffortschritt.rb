@@ -4,6 +4,7 @@ require 'twitter'
 require 'parseconfig'
 require 'rest-client'
 require 'multi_json'
+require 'date'
 
 VACCINE_DATA_URL = "https://interaktiv.morgenpost.de/data/corona/rki-vaccinations.json"
 POPULATION = 83190556 #https://www.destatis.de/DE/Themen/Gesellschaft-Umwelt/Bevoelkerung/Bevoelkerungsstand/Tabellen/zensus-geschlecht-staatsangehoerigkeit-2020.html
@@ -34,6 +35,21 @@ rescue StandardError => e
   raise e
 end
 
+
+begin
+  content = File.read('./data')
+rescue StandardError => e
+  content = "1970-01-01"
+end
+
+pubdate_parsed = Date._parse(data["date"])
+pubdate = Time.new(pubdate_parsed[:year], pubdate_parsed[:mon], pubdate_parsed[:mday])
+olddate_parsed = Date._parse(content)
+olddate = Time.new(olddate_parsed[:year], olddate_parsed[:mon], olddate_parsed[:mday])
+
+if olddate >= pubdate
+  exit(0)
+end
 
 progress = (data["sum"]/required_doses.to_f).round(3)*100
 doses_per_day = (data["sum"] - data["sum_7d"])/7
@@ -69,3 +85,4 @@ client = Twitter::REST::Client.new do |config|
 end
 
 client.update(tweet)
+File.write('./data', data["date"])
