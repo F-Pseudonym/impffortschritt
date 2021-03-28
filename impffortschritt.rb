@@ -55,6 +55,7 @@ progress = ((data["sum"]/required_doses.to_f)*100).round(1)
 doses_per_day = (data["sum"] - data["sum_7d"])/7
 remaining_days = (required_doses-data["sum"])/doses_per_day
 target_date = Time.now + remaining_days * 24*60*60
+doses_per_second = (doses_per_day.to_f / (3600*24)).round(2)
 
 
 bar = ""
@@ -70,10 +71,11 @@ line1 = "Geimpfte Dosen (Deutschland): #{data["sum"]} 💉\n"
 line2 = "Fortschritt für Herdenimmunität (70% geimpfte):\n"
 line3 = bar + " (#{progress}%)\n"
 line4 = "Geschätzes Zieldatum: #{target_date.strftime("%d.%m.%Y")} 📅\n"
-line5 = "#COVID19 #VACCINE"
+line5 = "⌀(7 Tage): #{doses_per_second} Impfungen pro Sekunde\n"
+line6 = "#COVID19 #VACCINE"
 
 
-tweet = line1 + line2 + line3 + line4 + line5
+tweet = line1 + line2 + line3 + line4 + line5 + line6
 
 
 
