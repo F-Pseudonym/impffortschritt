@@ -67,7 +67,7 @@ BAR_LENGTH.times { |i|
   end
 }
 
-line1 = "Geimpfte Dosen (Deutschland): #{data["sum"]} 💉\n"
+line1 = "Geimpfte Dosen (Deutschland): #{data["sum"].to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} 💉\n"
 line2 = "Fortschritt für Herdenimmunität (70% geimpfte):\n"
 line3 = bar + " (#{progress}%)\n"
 line4 = "Geschätzes Zieldatum: #{target_date.strftime("%d.%m.%Y")} 📅\n"
