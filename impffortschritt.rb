@@ -3,10 +3,10 @@
 require 'twitter'
 require 'parseconfig'
 require 'rest-client'
-require 'multi_json'
 require 'date'
+require 'tsv'
 
-VACCINE_DATA_URL = "https://interaktiv.morgenpost.de/data/corona/rki-vaccinations.json"
+VACCINE_DATA_URL = "https://impfdashboard.de/static/data/germany_vaccinations_timeseries_v2.tsv"
 POPULATION = 83190556 #https://www.destatis.de/DE/Themen/Gesellschaft-Umwelt/Bevoelkerung/Bevoelkerungsstand/Tabellen/zensus-geschlecht-staatsangehoerigkeit-2020.html
 DOSES_PER_PERSON = 2
 PERCENTAGE_HERD_IMMUNITY = 0.7
@@ -23,18 +23,19 @@ stored_config = ParseConfig.new("#{File.dirname(__FILE__)}/twitter.config")
 data = {}
 
 begin
-  response = RestClient.get VACCINE_DATA_URL, {:accept => :json}
-  MultiJson.load(response).each do |entry|
-    if(entry["id"] == "de")
-      data["date"] = entry["date"]
-      data["sum"] = entry["cumsum_latest"]
-      data["sum_7d"] = entry["cumsum_7_days_ago"]
-    end
+  response = RestClient.get VACCINE_DATA_URL, {:accept => :tsv}
+  data_table = TSV.parse(response).without_header.each_with_index do |entry, idx|
+      data["date"] = entry.to_a[0]
+      data["sum"] = entry.to_a[1].to_i
+      data["index"] = idx
+      # data["sum_7d"] = entry["cumsum_7_days_ago"]
   end
 rescue StandardError => e
   raise e
 end
 
+data_7d = TSV.parse(response).without_header.take(data["index"]-6).last
+data["sum_7d"] = data_7d.to_a[1].to_i
 
 begin
   content = File.read('./data')
