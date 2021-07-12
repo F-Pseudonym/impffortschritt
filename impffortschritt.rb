@@ -115,6 +115,5 @@ client = Twitter::REST::Client.new do |config|
   config.access_token_secret = stored_config["access_token_secret"]
 end
 
-#client.update(tweet)
-#File.write('./data', data["date"])
-puts tweet
+client.update(tweet)
+File.write('./data', data["date"])
