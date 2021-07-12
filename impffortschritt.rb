@@ -95,7 +95,7 @@ BAR_LENGTH.times { |i|
 
 
 line1 = "Geimpfte Dosen (Deutschland): #{data["sum"].to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} 💉\n"
-line11 = "Herdenimmunität (85% vollst. Geimpfte): #{required_immune_persons_delta.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} 💉\n"
+line11 = "Herdenimmunität (85% vollst. Geimpfte): #{required_immune_persons_delta.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} 🧑\n"
 line2 = "Fortschritt für Herdenimmunität:\n"
 line3 = bar_full + " (#{progress_full}%)\n"
 line31 = "Fortschritt Erstgeimpfte:\n"
