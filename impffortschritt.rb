@@ -95,17 +95,16 @@ BAR_LENGTH.times { |i|
 
 
 line1 = "Geimpfte Dosen (Deutschland): #{data["sum"].to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} 💉\n"
-line11 = "Nötig für Herdenimmunität (85% vollständig Geimpfte): #{required_immune_persons_delta.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} 💉🧑\n"
+line11 = "Herdenimmunität (85% vollst. Geimpfte): #{required_immune_persons_delta.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} 💉\n"
 line2 = "Fortschritt für Herdenimmunität:\n"
 line3 = bar_full + " (#{progress_full}%)\n"
 line31 = "Fortschritt Erstgeimpfte:\n"
 line32 = bar_first + " (#{progress_first}%)\n"
 # line4 = "Geschätzes Zieldatum: #{target_date.strftime("%d.%m.%Y")} 📅\n"
-line5 = "⌀(7 Tage): #{doses_per_second} Impfungen pro Sekunde\n"
-line6 = "#COVID19 #VACCINE"
+line5 = "⌀(7 Tage): #{doses_per_second} Impf./s"
 
 
-tweet = line1 + line11 + line2 + line3 + line31 + line32 +  line5 + line6
+tweet = line1 + line11 + line2 + line3 + line31 + line32 +  line5
 
 
 
@@ -116,5 +115,6 @@ client = Twitter::REST::Client.new do |config|
   config.access_token_secret = stored_config["access_token_secret"]
 end
 
-client.update(tweet)
-File.write('./data', data["date"])
+#client.update(tweet)
+#File.write('./data', data["date"])
+puts tweet
