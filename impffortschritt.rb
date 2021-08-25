@@ -16,6 +16,10 @@ CHAR_S = "🟦"
 CHAR_N = "⬜️"
 BAR_LENGTH = 20
 
+table_index_sum = 1
+table_index_people_first = 17
+table_index_people_full = 18
+
 
 required_doses = (POPULATION * DOSES_PER_PERSON * PERCENTAGE_HERD_IMMUNITY).round(0)
 required_immune_persons_delta = (POPULATION * PERCENTAGE_HERD_IMMUNITY_DELTA).round(0)
@@ -29,9 +33,9 @@ begin
   response = RestClient.get VACCINE_DATA_URL, {:accept => :tsv}
   data_table = TSV.parse(response).without_header.each_with_index do |entry, idx|
       data["date"] = entry.to_a[0]
-      data["sum"] = entry.to_a[1].to_i
-      data["first"] = entry.to_a[8].to_i
-      data["full"] = entry.to_a[9].to_i
+      data["sum"] = entry.to_a[table_index_sum].to_i
+      data["first"] = entry.to_a[table_index_people_first].to_i
+      data["full"] = entry.to_a[table_index_people_full].to_i
       data["index"] = idx
       # data["sum_7d"] = entry["cumsum_7_days_ago"]
   end
