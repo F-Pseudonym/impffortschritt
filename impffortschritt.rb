@@ -112,7 +112,7 @@ line6 = "Geschätzes Zieldatum: #{full_target_date.strftime("%d.%m.%Y")} 📅\n"
 
 
 
-tweet = line1 + line2 + line3 + line4 + line5 + line6
+tweet = line1 + line4 + line5 + line2 + line3 + line6
 
 
 
