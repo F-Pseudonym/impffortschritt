@@ -14,11 +14,13 @@ PERCENTAGE_HERD_IMMUNITY_DELTA = 0.85
 CHAR_Y = "🟩"
 CHAR_S = "🟦"
 CHAR_N = "⬜️"
+CHAR_B = "🟪"
 BAR_LENGTH = 20
 
 table_index_sum = 1
 table_index_people_first = 27
 table_index_people_full = 28
+table_index_people_third = 29
 
 
 required_doses = (POPULATION * DOSES_PER_PERSON * PERCENTAGE_HERD_IMMUNITY).round(0)
@@ -36,6 +38,7 @@ begin
       data["sum"] = entry.to_a[table_index_sum].to_i
       data["first"] = entry.to_a[table_index_people_first].to_i
       data["full"] = entry.to_a[table_index_people_full].to_i
+      data["third"] = entry.to_a[table_index_people_third].to_i
       data["index"] = idx
       # data["sum_7d"] = entry["cumsum_7_days_ago"]
   end
@@ -46,6 +49,7 @@ end
 data_7d = TSV.parse(response).without_header.take(data["index"]-6).last
 data["sum_7d"] = data_7d.to_a[table_index_sum].to_i
 data["full_7d"] = data_7d.to_a[table_index_people_full].to_i
+data["third_7d"] = data_7d.to_a[table_index_people_third].to_i
 
 begin
   content = File.read('./data')
@@ -68,12 +72,16 @@ remaining_days = (required_doses-data["sum"])/doses_per_day
 target_date = Time.now + remaining_days * 24*60*60
 doses_per_second = (doses_per_day.to_f / (3600*24)).round(2)
 
+third_doses_per_day = (data["third"] - data["third_7d"])/7
+third_doses_per_second = (third_doses_per_day.to_f / (3600*24)).round(2)
+
 full_per_day = (data["full"] - data["full_7d"])/7
 full_remaining_days = (required_immune_persons_delta-data["full"])/full_per_day
 full_target_date = Time.now + full_remaining_days * 24*60*60
 
 progress_first = ((data["first"]/required_immune_persons_delta.to_f)*100).round(1)
 progress_full = ((data["full"]/required_immune_persons_delta.to_f)*100).round(1)
+progress_third = ((data["third"]/required_immune_persons_delta.to_f)*100).round(1)
 
 # bar = ""
 # BAR_LENGTH.times { |i|
@@ -102,6 +110,15 @@ BAR_LENGTH.times { |i|
   end
 }
 
+bar_third = ""
+BAR_LENGTH.times { |i|
+  if((i+1)*bar_step <= progress_third)
+    bar_third << CHAR_B
+  else
+    bar_third << CHAR_N
+  end
+}
+
 
 line1 = "Geimpfte Dosen: #{data["sum"].to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} 💉\n⌀(7 Tage): #{doses_per_second} 💉/s\n"
 line2 = "Fortschritt für Herdenimmunität:\n"
@@ -116,6 +133,13 @@ tweet = line1 + line4 + line5 + line2 + line3 + line6
 
 
 
+line21 = "Geimpfte Booster-Dosen: #{data["third"].to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} 💉\n⌀(7 Tage): #{third_doses_per_second} 💉/s\n"
+line22 = "Fortschritt für Herdenimmunität (85%):\n"
+line23 = bar_third + " (#{progress_third}%)\n"
+
+tweet2 = line21 + line22 + line23
+
+
 client = Twitter::REST::Client.new do |config|
   config.consumer_key        = stored_config["consumer_key"]
   config.consumer_secret     = stored_config["consumer_secret"]
@@ -124,4 +148,5 @@ client = Twitter::REST::Client.new do |config|
 end
 
 client.update(tweet)
+client.update(tweet2)
 File.write('./data', data["date"])
