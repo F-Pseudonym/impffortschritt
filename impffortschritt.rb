@@ -18,9 +18,9 @@ CHAR_B = "🟪"
 BAR_LENGTH = 20
 
 table_index_sum = 1
-table_index_people_first = 27
-table_index_people_full = 28
-table_index_people_third = 29
+table_index_people_first = 31
+table_index_people_full = 32
+table_index_people_third = 33
 
 
 required_doses = (POPULATION * DOSES_PER_PERSON * PERCENTAGE_HERD_IMMUNITY).round(0)
